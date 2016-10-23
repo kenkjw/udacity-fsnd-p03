@@ -16,11 +16,25 @@ import os
 import webapp2
 import jinja2
 
+import random
+import hashlib
+import hmac
+
 template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 
-class Handler(webapp2.RequestHandler):
+secret = 'hu9d9sv7ok.jio2398hfjsdklfjm78x9vhzp2323453'
+
+def make_secure_val(val):
+    return '%s|%s' % (val, hmac.new(secret, val).hexdigest())
+
+def check_secure_val(secure_val):
+    val = secure_val.split('|')[0]
+    if secure_val == make_secure_val(val):
+        return val
+
+class BlogHandler(webapp2.RequestHandler):
     def write(self, *a, **kw):
         self.response.out.write(*a, **kw)
 
@@ -31,19 +45,46 @@ class Handler(webapp2.RequestHandler):
     def render(self, template, **kw):
         self.write(self.render_str(template, **kw))
 
+    def set_secure_cookie(self, name, val):
+        cookie_val = make_secure_val(val)
+        self.response.headers.add_header(
+            'Set-Cookie',
+            '%s=%s; Path=/' % (name, cookie_val))
 
-class MainPage(webapp2.RequestHandler):
+    def read_secure_cookie(self, name):
+        cookie_val = self.request.cookies.get(name)
+        return cookie_val and check_secure_val(cookie_val)
+
+    def login(self, user):
+        self.set_secure_cookie('user_id', str(user.key().id()))
+
+    def logout(self):
+        self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+
+    def initialize(self, *a, **kw):
+        webapp2.RequestHandler.initialize(self, *a, **kw)
+        uid = self.read_secure_cookie('user_id')
+        self.user = uid and User.by_id(int(uid))
+
+
+
+
+class LoginPage(BlogHandler):
     def get(self):
-        self.response.write('Hello, World!')
+        self.render("login.html")
+
+class SignupPage(BlogHandler):
+    def get(self):
+        self.render("signup.html")
+
+
+class FrontPage(BlogHandler):
+    def get(self):
+        self.render("index.html")
+
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
+    ('/', FrontPage),
+    ('/login', LoginPage),
+    ('/signup', SignupPage)
 ], debug=True)
-
-
-def main():
-    from paste import httpserver
-    httpserver.serve(app, host='127.0.0.1', port='8081')
-
-if __name__ == '__main__':
-    main()

@@ -3,8 +3,15 @@ api_version: 1
 threadsafe: true
 
 handlers:
+- url: /css
+  static_dir: public/css
+
+- url: /img
+  static_dir: public/img
+
 - url: /.*
   script: main.app
+
 
 libraries:
 - name: jinja2
