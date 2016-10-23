@@ -4,6 +4,9 @@ body {
     font-weight: 300;
 }
 
+form, textarea{
+    padding: 0;
+}
 .muted {
     color: #7d97ad;
 }
