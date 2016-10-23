@@ -1,3 +1,37 @@
 body {
-    
+    font-family: "Lato", sans-serif;
+    color: #2d3c49;
+    font-weight: 300;
+}
+
+.muted {
+    color: #7d97ad;
+}
+
+.medium-line {
+    border: none;
+    height: 4px;
+    color: #7d97ad;
+    background-color: #7d97ad;
+}
+
+.text-thin {
+    font-weight: 100;
+}
+
+.title-super {
+    font-size: 60px;
+}
+
+.title-app {
+    font-size: 36px;
+}
+
+.title-works {
+    margin-left: 12px;
+    font-size: 28px;
+}
+
+.title-logo {
+    margin-top: 25px;
 }
