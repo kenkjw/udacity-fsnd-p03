@@ -1,11 +1,24 @@
-<article class="col-md-12 post">
-    <div class="post-header">
-        <a href="/blog/{{ post.key().id() }}"><h4>{{ post.subject }}</h4></a>
+<article class="row post">
+    <div class="col-md-12 post-header">
+        <div class="row">
+            <div class="col-md-6">
+                <a href="/blog/{{ post.key().id() }}"><h4>{{ post.subject }}</h4></a>
+                {% if post.author.username == user.username %}
+                <div class="col-md-6 text-right"><a href="/blog/edit/{{ post.key().id() }}">Edit</a> <a href="/blog/delete/{{ post.key().id() }}">Delete</a></div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <div class="post-body">
-    {{ post.content | markdown }}
+    <div class="col-md-12 post-body">
+        <div class="row">
+            <div class="col-md-12">
+                {{ post.content | markdown }}
+            </div>
+        </div>
     </div>
-    <div class="post-footer">
-        Posted: {{ post.created.strftime("%x @ %X") }}
+    <div class="col-md-12 post-footer">
+        <div class="row">
+            <div class="col-md-6">Posted by {{ post.author.username }}: {{ post.created.strftime("%x @ %X") }}</div>
+        </div>
     </div>
 </article>

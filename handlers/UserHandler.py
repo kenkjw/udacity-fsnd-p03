@@ -17,7 +17,7 @@ class LoginPage(BlogHandler):
         u = User.login(username,password)
         if u:
             self.login(u)
-            self.redirect('/blog')
+            self.redirect('/welcome')
         else:
             self.params["error"] = "Invalid username/password combination"
             self.render("login.html")
@@ -73,7 +73,7 @@ class SignupPage(BlogHandler):
 class LogoutPage(BlogHandler):
     def get(self):
         self.logout()
-        self.redirect('/')
+        self.redirect('/signup')
 
 class WelcomePage(BlogHandler):
     def get(self):
