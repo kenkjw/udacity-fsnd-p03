@@ -1,20 +1,17 @@
 import webapp2
-
-import os
-
 import random
 import hashlib
 import hmac
-
-import config
-
+import os
 import jinja2
-import markdown
+from lib import markdown
+import config
+from models.user import User
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
-md = markdown.Markdown(extensions=['meta'])
+md = markdown.Markdown()
 jinja_env.filters['markdown'] = lambda text: jinja2.Markup(md.convert(text))
 
 
@@ -27,7 +24,8 @@ class BlogHandler(webapp2.RequestHandler):
         return t.render(params)
 
     def render(self, template, **kw):
-        self.write(self.render_str(template, **kw))
+        self.params.update(kw)
+        self.write(self.render_str(template, **self.params))
 
     def set_secure_cookie(self, name, val):
         cookie_val = make_secure_val(val)
@@ -49,6 +47,8 @@ class BlogHandler(webapp2.RequestHandler):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
+        self.params = dict()
+        self.params['user'] = self.user
 
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(config.secret, val).hexdigest())
