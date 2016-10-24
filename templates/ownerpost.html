@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 <section class="col-md-12">
-<div>{{ error }}</div>
+<div class="row">
+    <div class="col-md-12">{{ error }}</div>
+</div>
 <h2> Posts by {{ owner.username }}</h2>
 {% for post in posts %}
     {% include "post.html" %}

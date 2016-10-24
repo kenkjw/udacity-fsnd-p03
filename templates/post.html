@@ -3,10 +3,15 @@
         <div class="row">
             <div class="col-md-6">
                 <a href="/blog/{{ post.key().id() }}"><h4>{{ post.subject }}</h4></a>
-                {% if post.author.username == user.username %}
-                <div class="col-md-6 text-right"><a href="/blog/edit/{{ post.key().id() }}">Edit</a> <a href="/blog/delete/{{ post.key().id() }}">Delete</a></div>
-                {% endif %}
             </div>
+            {% if post.author.username == user.username %}
+            <div class="col-md-6 text-right">
+                <form class="form-inline" method="post" action="/blog/delete/{{ post.key().id() }}">
+                    <a class="btn btn-default post-button btn-xs" href="/blog/edit/{{ post.key().id() }}">Edit</a> 
+                    <button type="submit" class="btn btn-danger post-button btn-xs">Delete</button>
+                </form>
+            </div>
+            {% endif %}
         </div>
     </div>
     <div class="col-md-12 post-body">
@@ -18,7 +23,7 @@
     </div>
     <div class="col-md-12 post-footer">
         <div class="row">
-            <div class="col-md-6">Posted by {{ post.author.username }}: {{ post.created.strftime("%x @ %X") }}</div>
+            <div class="col-md-6">Posted by <a href="/user/{{ post.author.username }}">{{ post.author.username }}</a>: {{ post.created.strftime("%x @ %X") }}</div>
         </div>
     </div>
 </article>

@@ -47,9 +47,12 @@ form, textarea{
 }
 
 .post-body {
-
+    min-height: 8em;
 }
 
 .post-footer {
     border-top: 1px solid #000;
+}
+.post-button {
+    width: 5em;
 }

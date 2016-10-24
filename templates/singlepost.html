@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="col-md-12">{{ error }}</div>
+<div class="row">
+    <div class="col-md-12">{{ error }}</div>
+</div>
+<section class="col-md-12">
 {% include "post.html" %}
+</section>
 {% endblock %}

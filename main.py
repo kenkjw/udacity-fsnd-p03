@@ -12,7 +12,7 @@ app = webapp2.WSGIApplication([
     ('/blog/(\d+)', PostHandler.SinglePostPage),
     ('/blog/new', PostHandler.NewPostPage),
     ('/blog/edit/(\d+)', PostHandler.EditPostPage),
-    ('/blog/delete', PostHandler.DeletePostPage),
+    ('/blog/delete/(\d+)', PostHandler.DeletePostPage),
     ('/login', UserHandler.LoginPage),
     ('/signup', UserHandler.SignupPage),
     ('/logout', UserHandler.LogoutPage),

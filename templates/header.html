@@ -1,8 +1,8 @@
 <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <a href="/"><img class="title-logo" src="/img/logo.svg" width="80" height="80" alt="Udacity logo" /></a>
         </div>
-        <div class="col-md-6 text-right">
+        <div class="col-md-12 text-right">
             {% if user %}
             <span>Welcome, {{ user.username }}! <a href="/logout">Logout</a></span>
             {% else %}
@@ -15,8 +15,8 @@
         <hr class="medium-line muted">
         {% if user %}
         <nav>
-            <a href="/blog/new">New Post</a>
-            <a href="/blog">View your posts</a>
+            <a class="btn btn-default btn-xs" href="/blog/new">New Post</a>
+            <a class="btn btn-default btn-xs" href="/blog">View Posts</a>
         </nav>
         <hr class="medium-line muted">
         {% endif %} 
