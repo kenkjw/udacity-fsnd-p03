@@ -1,13 +1,16 @@
 from BlogHandler import BlogHandler
-import models.post as Post
+from models.post import Post, blog_key
+
 
 class AllPostsPage(BlogHandler):
     def get(self):
-        self.render("allposts.html")
+        posts = Post.get_all()
+        self.render("allposts.html",posts = posts)
 
 class SinglePostPage(BlogHandler):
     def get(self,post_id):
-        self.render("singlepost.html")
+        post = Post.by_id(post_id)
+        self.render("singlepost.html",post = post)
 
 class NewPostPage(BlogHandler):
     def get(self):
@@ -18,7 +21,7 @@ class NewPostPage(BlogHandler):
         content = self.request.get('content')
 
         if subject and content:
-            p = Post.Post(parent = Post.blog_key(), subject = subject, content = content)
+            p = Post(parent = blog_key(), subject = subject, content = content)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:

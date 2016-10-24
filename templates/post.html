@@ -1,0 +1,11 @@
+<article class="col-md-12 post">
+    <div class="post-header">
+        <a href="/blog/{{ post.key().id() }}"><h4>{{ post.subject }}</h4></a>
+    </div>
+    <div class="post-body">
+    {{ post.content | markdown }}
+    </div>
+    <div class="post-footer">
+        Posted: {{ post.created.strftime("%x @ %X") }}
+    </div>
+</article>

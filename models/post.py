@@ -11,4 +11,8 @@ class Post(db.Model):
 
     @classmethod
     def by_id(cls, post_id):
-        return cls.get_by_id(post_id, parent = blog_key())
+        return cls.get_by_id(int(post_id), parent = blog_key())
+
+    @classmethod
+    def get_all(cls, order = "-created"):
+        return cls.all().order(order)
