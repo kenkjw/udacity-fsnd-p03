@@ -50,7 +50,7 @@ class SignupPage(BlogHandler):
             self.params['error_password'] = "That wasn't a valid password."
             have_error = True
         elif password != confirm:
-            self.params['error_verify'] = "Your passwords didn't match."
+            self.params['error_password'] = "Your passwords didn't match."
             have_error = True
 
         if not valid_email(email):
@@ -68,13 +68,19 @@ class SignupPage(BlogHandler):
                 u = User.register(username, password, email)
                 u.put()
                 self.login(u)
-                self.redirect('/blog')
+                self.redirect('/welcome')
 
 class LogoutPage(BlogHandler):
     def get(self):
         self.logout()
         self.redirect('/')
 
+class WelcomePage(BlogHandler):
+    def get(self):
+        if self.user:
+            self.render("welcome.html")
+        else:
+            self.redirect('/signup')
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def valid_username(username):
