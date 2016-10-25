@@ -1,6 +1,7 @@
 from BlogHandler import BlogHandler, AuthBlogHandler
 from models.post import Post, Comment
 from models.user import User
+from utils import errors
 
 class AllPostsPage(BlogHandler):
     def get(self):
@@ -14,10 +15,15 @@ class SinglePostPage(BlogHandler):
 
 class OwnerPostsPage(BlogHandler):
     def get(self, name = None):
-        u = name and User.by_name(name) or self.user
+        u = name and User.by_name(name)
         if not u:
-            self.params["error"] = "User not found"
-            self.render("ownerpost.html")
+            if self.user:
+                if name:
+                    self.redirect_error("/blog","USER_NOT_FOUND")
+                else:
+                    self.render("ownerpost.html",posts=self.user.posts_collection, owner=self.user)
+            else:
+                self.redirect_error("/","USER_NOT_FOUND")
         else:
             self.render("ownerpost.html",posts=u.posts_collection, owner=u)
 
@@ -34,7 +40,7 @@ class NewPostPage(AuthBlogHandler):
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
-            error = "You must fill out the form"
+            error = errors.get_str("POST_INCOMPLETE_FORM")
             self.render("newpost.html", subject = subject, content = content, error = error)
 
 class EditPostPage(AuthBlogHandler):
@@ -43,8 +49,7 @@ class EditPostPage(AuthBlogHandler):
         if post: 
             self.render("editpost.html", post=post)
         else:
-            error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.redirect_error("/blog","POST_NOT_FOUND")
 
     def post(self,post_id):
         subject = self.request.get('subject')
@@ -52,30 +57,28 @@ class EditPostPage(AuthBlogHandler):
 
         post = Post.by_id(post_id)
         if not post:
-            error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.redirect_error("/blog","POST_NOT_FOUND")
         elif post.author.username != self.user.username:
-            error = "You do not have the permission to edit this post"
-            self.render("singlepost.html", post=post, error=error)
+            self.redirect_error("/blog/%s" % str(post.key().id()),
+                                "POST_NO_PERMISSION_EDIT")
         elif subject and content:
             post.subject = subject
             post.content = content
             post.put()
             self.redirect('/blog/%s' % str(post.key().id()))
         else:
-            error = "You must fill out the form"
-            self.render("editpost.html", post=post, subject = subject, content = content, error = error)
+            error = errors.get_str("POST_INCOMPLETE_FORM")
+            self.render("editpost.html", post=post, subject=subject, content=content, error=error)
 
 
 class DeletePostPage(AuthBlogHandler):
     def post(self, post_id):
         post = Post.by_id(post_id)
         if not post:
-            error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.redirect_error("/blog","POST_NOT_FOUND")
         elif post.author.username != self.user.username:
-            error = "You do not have the permission to delete this post"
-            self.render("singlepost.html", post=post, error=error)
+            self.redirect_error("/blog/"+post_id,
+                                "POST_NO_PERMISSION_DELETE")
         else:
             post.delete()
             self.redirect("/blog")
@@ -84,11 +87,9 @@ class LikePostPage(AuthBlogHandler):
     def get(self, post_id, like = True):
         post = Post.by_id(post_id)
         if not post:
-            error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.redirect_error("/blog","POST_NOT_FOUND")
         elif post.author.username == self.user.username:
-            error = "You cannot like your own post"
-            self.render("singlepost.html", post=post, error=error)
+            self.redirect_error("/blog/"+post_id,POST_LIKE_OWN)
         else:
             post.like_by(like, self.user)
             self.redirect("/blog/"+post_id)
@@ -104,25 +105,20 @@ class CommentPostPage(AuthBlogHandler):
         content = self.request.get('content')
         
         if not post:
-            error = "Unable to find post"
-            self.render("/")
+            self.redirect_error("/blog","POST_NOT_FOUND")
         elif content:
             post.post_comment(self.user, content)
             self.redirect("/blog/"+post_id)
         else:
-            error = "You must fill out the form"
-            self.redirect("/blog/"+post_id)
-
+            self.redirect_error("/blog/"+post_id,"POST_INCOMPLETE_FORM")
 
 class CommentEditPostPage(AuthBlogHandler):
     def post(self, post_id):
         post = Post.by_id(post_id)
-
         content = self.request.get('content')
         
         if not post:
-            error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.redirect_error("/blog","POST_NOT_FOUND")
 
 class CommentDeletePostPage(AuthBlogHandler):
     def post(self, post_id,comment_id):
@@ -130,16 +126,11 @@ class CommentDeletePostPage(AuthBlogHandler):
         comment = Comment.by_id(comment_id,post)
 
         if not post:
-            error = "Unable to find post"
-            self.render("allposts.html")
+            self.redirect_error("/blog","POST_NOT_FOUND")
         elif not comment:
-            error = "Unable to find comment"
-            #self.redirect("/blog/"+post_id)
-            self.render("singlepost.html",post=post, error=error)
+            self.redirect_error("/blog/"+post_id,"COMMENT_NOT_FOUND")
         elif comment.author.username != self.user.username:
-            error = "You do not have the permission to delete this comment"
-            self.render("singlepost.html",post=post, error=error)
-            #self.redirect("/blog/"+post_id)
+            self.redirect_error("/blog/"+post_id,"COMMENT_NO_PERMISSION_DELETE")
         else:
             comment.delete()
             self.redirect("/blog/"+post_id)

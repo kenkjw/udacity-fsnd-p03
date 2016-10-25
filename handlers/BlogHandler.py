@@ -7,6 +7,7 @@ import jinja2
 from lib import markdown
 import config
 from models.user import User
+from utils import errors
 
 template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
@@ -43,12 +44,17 @@ class BlogHandler(webapp2.RequestHandler):
     def logout(self):
         self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
 
+    def redirect_error(self,uri,error):
+        self.redirect(uri+"?error="+errors.get(error),abort=True)
+
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
         uid = self.read_secure_cookie('user_id')
         self.user = uid and User.by_id(int(uid))
         self.params = dict()
         self.params['user'] = self.user
+        if self.request.get('error'):
+            self.params['error'] = errors.get(self.request.get('error'))
 
 class AuthBlogHandler(BlogHandler):
     def initialize(self, *a, **kw):
