@@ -98,4 +98,38 @@ class UnlikePostPage(LikePostPage):
         super(UnlikePostPage, self).get(post_id, False)
 
 class CommentPostPage(AuthBlogHandler):
-    pass
+    def post(self, post_id):
+        post = Post.by_id(post_id)
+
+        content = self.request.get('content')
+        
+        if not post:
+            error = "Unable to find post"
+            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+        elif content:
+            post.post_comment(self.user, content)
+            self.redirect("/blog/"+post_id)
+        else:
+            error = "You must fill out the form"
+            self.redirect("/blog/"+post_id)
+
+
+class CommentEditPostPage(AuthBlogHandler):
+    def post(self, post_id):
+        post = Post.by_id(post_id)
+
+        content = self.request.get('content')
+        
+        if not post:
+            error = "Unable to find post"
+            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+
+class CommentDeletePostPage(AuthBlogHandler):
+    def post(self, post_id):
+        post = Post.by_id(post_id)
+
+        content = self.request.get('content')
+        
+        if not post:
+            error = "Unable to find post"
+            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)

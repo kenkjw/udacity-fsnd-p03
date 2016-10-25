@@ -35,6 +35,12 @@ class Post(db.Model):
         l = [like for like in likes if like.user.username == user.username]
         return l
 
+    def post_comment(self, user, comment):
+        return Comment.post_comment(user, self, comment)
+
+    def get_comments(self, order = "-created"):
+        return Comment.all().ancestor(self).order(order)
+
 
 class Like(db.Model):
     user = db.ReferenceProperty(User, collection_name='likes_collection', required = True)
@@ -54,9 +60,6 @@ class Comment(db.Model):
     last_modified = db.DateTimeProperty(auto_now = True)
 
     @classmethod
-    def by_id(cls, post_id):
-        return cls.get_by_id(int(post_id))
+    def post_comment(cls, user, post, comment):
+        return Comment(author=user, comment=comment, parent=post).put()
 
-    @classmethod
-    def comment_key(cls, name = 'default'):
-        return db.Key.from_path('comments', name)

@@ -56,3 +56,10 @@ form, textarea{
 .post-button {
     width: 5em;
 }
+
+.comment {
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 0 15px;
+    margin-bottom: 10px;
+}
