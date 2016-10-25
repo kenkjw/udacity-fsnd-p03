@@ -6,7 +6,7 @@
 <section class="col-md-9 comment-box">
     <h2>Comments</h2>
     <div>
-    <form method="post" action="/blog/{{ post.key().id() }}/comment">
+    <form class="row" method="post" action="/blog/{{ post.key().id() }}/comment">
         <div class="form-group">
             <label for="content">Post a comment:</label>
             <textarea class="form-control" name="content" id="content" rows="5">{{ content }}</textarea>
@@ -18,9 +18,18 @@
     </form>
     </div>    
         {% for comment in post.get_comments() %}
-    <div class="comment border-top-radius(5px) border-bottom-radius(5px)">
-        <div class="comment-body">
+    <div class="row comment">
+        {% if comment.author.username == user.username %}
+
+        {% endif %}
+        <div class="col-md-12 comment-body">
             {{ comment.comment | markdown }}
+            <div class="comment-action">
+                <form class="form-inline" method="post" action="/blog/{{ post.key().id() }}/comment/{{ comment.key().id() }}/delete">
+                        <a class="btn btn-default btn-xs" href="/blog/{{ post.key().id() }}/comment/{{ comment.key().id() }}/edit">Edit</a> 
+                        <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                </form>
+            </div>
         </div>
         <div class="comment-footer text-right">
             <span><a href="/user/{{ comment.author.username }}">{{ comment.author.username }}</a> @ {{ comment.created.strftime("%x @ %X") }}</span>

@@ -46,10 +46,6 @@ class Like(db.Model):
     user = db.ReferenceProperty(User, collection_name='likes_collection', required = True)
 
     @classmethod
-    def by_id(cls, post_id):
-        return cls.get_by_id(int(post_id))
-
-    @classmethod
     def like(cls,user, post):
         return Like(user=user, parent=post).put()
 
@@ -63,3 +59,8 @@ class Comment(db.Model):
     def post_comment(cls, user, post, comment):
         return Comment(author=user, comment=comment, parent=post).put()
 
+    @classmethod
+    def by_id(cls, comment_id, post):
+        return cls.get_by_id(int(comment_id),parent=post)
+
+    

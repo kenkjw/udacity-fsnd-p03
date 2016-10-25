@@ -6,7 +6,7 @@
             </div>
             {% if user and post.author.username == user.username %}
             <div class="col-md-6 text-right">
-                <form class="form-inline" method="post" action="/blog/{{ post.key().id() }}/delete">
+                <form class="form-inline post-action" method="post" action="/blog/{{ post.key().id() }}/delete">
                     <a class="btn btn-default post-button btn-xs" href="/blog/{{ post.key().id() }}/edit">Edit</a> 
                     <button type="submit" class="btn btn-danger post-button btn-xs">Delete</button>
                 </form>

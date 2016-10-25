@@ -1,5 +1,5 @@
 from BlogHandler import BlogHandler, AuthBlogHandler
-from models.post import Post
+from models.post import Post, Comment
 from models.user import User
 
 class AllPostsPage(BlogHandler):
@@ -105,7 +105,7 @@ class CommentPostPage(AuthBlogHandler):
         
         if not post:
             error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.render("/")
         elif content:
             post.post_comment(self.user, content)
             self.redirect("/blog/"+post_id)
@@ -125,11 +125,21 @@ class CommentEditPostPage(AuthBlogHandler):
             self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
 
 class CommentDeletePostPage(AuthBlogHandler):
-    def post(self, post_id):
+    def post(self, post_id,comment_id):
         post = Post.by_id(post_id)
+        comment = Comment.by_id(comment_id,post)
 
-        content = self.request.get('content')
-        
         if not post:
             error = "Unable to find post"
-            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+            self.render("allposts.html")
+        elif not comment:
+            error = "Unable to find comment"
+            #self.redirect("/blog/"+post_id)
+            self.render("singlepost.html",post=post, error=error)
+        elif comment.author.username != self.user.username:
+            error = "You do not have the permission to delete this comment"
+            self.render("singlepost.html",post=post, error=error)
+            #self.redirect("/blog/"+post_id)
+        else:
+            comment.delete()
+            self.redirect("/blog/"+post_id)

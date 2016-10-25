@@ -23,7 +23,7 @@ class User(db.Model):
 
     @classmethod
     def register(cls, name, pw, email = None):
-        return User(parent = users_key(),
+        return User(parent = cls.users_key(),
             username = name,
             password = hash_password(name, pw),
             email = email)
