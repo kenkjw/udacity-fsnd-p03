@@ -22,9 +22,6 @@ class LoginPage(BlogHandler):
             self.params["error"] = "Invalid username/password combination"
             self.render("login.html")
             
-        
-
-
 class SignupPage(BlogHandler):
     def get(self):
         if self.user:

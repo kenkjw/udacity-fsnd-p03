@@ -46,3 +46,17 @@ class Like(db.Model):
     @classmethod
     def like(cls,user, post):
         return Like(user=user, parent=post).put()
+
+class Comment(db.Model):
+    author = db.ReferenceProperty(User, collection_name='comments_collection', required = True)
+    comment = db.TextProperty(required = True)
+    created = db.DateTimeProperty(auto_now_add = True)
+    last_modified = db.DateTimeProperty(auto_now = True)
+
+    @classmethod
+    def by_id(cls, post_id):
+        return cls.get_by_id(int(post_id))
+
+    @classmethod
+    def comment_key(cls, name = 'default'):
+        return db.Key.from_path('comments', name)

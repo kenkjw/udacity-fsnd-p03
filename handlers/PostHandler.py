@@ -1,4 +1,4 @@
-from BlogHandler import BlogHandler
+from BlogHandler import BlogHandler, AuthBlogHandler
 from models.post import Post
 from models.user import User
 
@@ -12,7 +12,16 @@ class SinglePostPage(BlogHandler):
         post = Post.by_id(post_id)
         self.render("singlepost.html",post = post)
 
-class NewPostPage(BlogHandler):
+class OwnerPostsPage(BlogHandler):
+    def get(self, name = None):
+        u = name and User.by_name(name) or self.user
+        if not u:
+            self.params["error"] = "User not found"
+            self.render("ownerpost.html")
+        else:
+            self.render("ownerpost.html",posts=u.posts_collection, owner=u)
+
+class NewPostPage(AuthBlogHandler):
     def get(self):
         self.render("newpost.html")
 
@@ -28,21 +37,7 @@ class NewPostPage(BlogHandler):
             error = "You must fill out the form"
             self.render("newpost.html", subject = subject, content = content, error = error)
 
-    def initialize(self, *a, **kw):
-        super(NewPostPage, self).initialize(*a, **kw)
-        if not self.user:
-            self.redirect("/login",abort="True")
-
-class OwnerPostsPage(BlogHandler):
-    def get(self, name = None):
-        u = name and User.by_name(name) or self.user
-        if not u:
-            self.params["error"] = "User not found"
-            self.render("ownerpost.html")
-        else:
-            self.render("ownerpost.html",posts=u.posts_collection, owner=u)
-
-class EditPostPage(BlogHandler):
+class EditPostPage(AuthBlogHandler):
     def get(self,post_id):
         post = Post.by_id(post_id)
         if post: 
@@ -71,12 +66,8 @@ class EditPostPage(BlogHandler):
             error = "You must fill out the form"
             self.render("editpost.html", subject = subject, content = content, error = error)
 
-    def initialize(self, *a, **kw):
-        super(EditPostPage, self).initialize(*a, **kw)
-        if not self.user:
-            self.redirect("/login",abort="True")
 
-class DeletePostPage(BlogHandler):
+class DeletePostPage(AuthBlogHandler):
     def post(self, post_id):
         post = Post.by_id(post_id)
         if not post:
@@ -89,13 +80,7 @@ class DeletePostPage(BlogHandler):
             post.delete()
             self.redirect("/blog")
 
-
-    def initialize(self, *a, **kw):
-        super(DeletePostPage, self).initialize(*a, **kw)
-        if not self.user:
-            self.redirect("/login",abort="True")
-
-class LikePostPage(BlogHandler):
+class LikePostPage(AuthBlogHandler):
     def get(self, post_id, like = True):
         post = Post.by_id(post_id)
         if not post:
@@ -108,11 +93,9 @@ class LikePostPage(BlogHandler):
             post.like_by(like, self.user)
             self.redirect("/blog/"+post_id)
 
-    def initialize(self, *a, **kw):
-        super(LikePostPage, self).initialize(*a, **kw)
-        if not self.user:
-            self.redirect("/login",abort="True")
-
 class UnlikePostPage(LikePostPage):
     def get(self, post_id):
         super(UnlikePostPage, self).get(post_id, False)
+
+class CommentPostPage(AuthBlogHandler):
+    pass

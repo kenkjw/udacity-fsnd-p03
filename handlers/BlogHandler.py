@@ -50,6 +50,12 @@ class BlogHandler(webapp2.RequestHandler):
         self.params = dict()
         self.params['user'] = self.user
 
+class AuthBlogHandler(BlogHandler):
+    def initialize(self, *a, **kw):
+        super(AuthBlogHandler, self).initialize(*a, **kw)
+        if not self.user:
+            self.redirect("/login",abort="True")
+
 def make_secure_val(val):
     return '%s|%s' % (val, hmac.new(config.secret, val).hexdigest())
 
