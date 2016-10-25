@@ -18,3 +18,5 @@ Instructions for deploying app:
 * Create a new project in [Google’s Developer Console](https://console.cloud.google.com/) using a unique name.
 * Configure your gcloud to use the new project with `gcloud init`
 * Navigate to your project directory with app.yaml and deploy your project with `gcloud app deploy`.
+
+To run the app locally, use `dev_appserver.py {project_dir}`
