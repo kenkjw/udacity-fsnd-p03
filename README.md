@@ -11,5 +11,10 @@ The live version of this website can be found at:
 http://kenkjw-udacity-p03.appspot.com
 
 
-Instructions for deploying app:  
--Deploy the app to appspot.com using `gcloud app deploy`
+Instructions for deploying app: 
+* [Install Python](https://www.python.org/downloads/) if necessary. 
+* [Install Google App Engine SDK.](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
+* Sign Up for a [Google App Engine Account.](https://console.cloud.google.com/appengine/)
+* Create a new project in [Google’s Developer Console](https://console.cloud.google.com/) using a unique name.
+* Configure your gcloud to use the new project with `gcloud init`
+* Navigate to your project directory with app.yaml and deploy your project with `gcloud app deploy`.
