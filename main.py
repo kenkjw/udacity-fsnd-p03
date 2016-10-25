@@ -10,6 +10,8 @@ app = webapp2.WSGIApplication([
     ('/user/([a-zA-Z0-9_-]+)', PostHandler.OwnerPostsPage),
     ('/blog', PostHandler.OwnerPostsPage),
     ('/blog/(\d+)', PostHandler.SinglePostPage),
+    ('/blog/(\d+)/like', PostHandler.LikePostPage),
+    ('/blog/(\d+)/unlike', PostHandler.UnlikePostPage),
     ('/blog/new', PostHandler.NewPostPage),
     ('/blog/edit/(\d+)', PostHandler.EditPostPage),
     ('/blog/delete/(\d+)', PostHandler.DeletePostPage),

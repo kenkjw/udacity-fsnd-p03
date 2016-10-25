@@ -1,5 +1,5 @@
 from BlogHandler import BlogHandler
-from models.post import Post, blog_key
+from models.post import Post
 from models.user import User
 
 class AllPostsPage(BlogHandler):
@@ -21,7 +21,7 @@ class NewPostPage(BlogHandler):
         content = self.request.get('content')
 
         if subject and content:
-            p = Post(parent = blog_key(), subject = subject, content = content, author = self.user)
+            p = Post(parent = Post.blog_key(), subject = subject, content = content, author = self.user)
             p.put()
             self.redirect('/blog/%s' % str(p.key().id()))
         else:
@@ -41,19 +41,6 @@ class OwnerPostsPage(BlogHandler):
             self.render("ownerpost.html")
         else:
             self.render("ownerpost.html",posts=u.posts_collection, owner=u)
-
-    def post(self):
-        subject = self.request.get('subject')
-        content = self.request.get('content')
-
-        if subject and content:
-            p = Post(parent = blog_key(), subject = subject, content = content)
-            p.put()
-            self.redirect('/blog/%s' % str(p.key().id()))
-        else:
-            error = "You must fill out the form"
-            self.render("newpost.html", subject = subject, content = content, error = error)
-
 
 class EditPostPage(BlogHandler):
     def get(self,post_id):
@@ -108,4 +95,24 @@ class DeletePostPage(BlogHandler):
         if not self.user:
             self.redirect("/login",abort="True")
 
+class LikePostPage(BlogHandler):
+    def get(self, post_id, like = True):
+        post = Post.by_id(post_id)
+        if not post:
+            error = "Unable to find post"
+            self.render("ownerpost.html", posts=u.posts_collection, owner=u, error=error)
+        elif post.author.username == self.user.username:
+            error = "You cannot like your own post"
+            self.render("singlepost.html", post=post, error=error)
+        else:
+            post.like_by(like, self.user)
+            self.redirect("/blog/"+post_id)
 
+    def initialize(self, *a, **kw):
+        super(LikePostPage, self).initialize(*a, **kw)
+        if not self.user:
+            self.redirect("/login",abort="True")
+
+class UnlikePostPage(LikePostPage):
+    def get(self, post_id):
+        super(UnlikePostPage, self).get(post_id, False)

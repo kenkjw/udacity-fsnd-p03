@@ -7,9 +7,6 @@ def hash_password(username, password):
 def check_password(username, password, hashed):
     return bcrypt.hashpw(username + password, hashed) == hashed
 
-def users_key(group = 'default'):
-    return db.Key.from_path('users', group)
-
 class User(db.Model):
     username = db.StringProperty(required = True)
     password = db.TextProperty(required = True)
@@ -17,7 +14,7 @@ class User(db.Model):
 
     @classmethod
     def by_id(cls, uid):
-        return cls.get_by_id(uid, parent = users_key())
+        return cls.get_by_id(uid, parent = cls.users_key())
 
     @classmethod
     def by_name(cls, name):
@@ -36,3 +33,7 @@ class User(db.Model):
         u = cls.by_name(name)
         if u and check_password(name, pw, u.password):
             return u
+    
+    @classmethod
+    def users_key(cls, group = 'default'):
+        return db.Key.from_path('users', group)
