@@ -4,7 +4,7 @@
             <div class="col-md-6">
                 <a href="/blog/{{ post.key().id() }}"><h4>{{ post.subject }}</h4></a>
             </div>
-            {% if post.author.username == user.username %}
+            {% if user and post.author.username == user.username %}
             <div class="col-md-6 text-right">
                 <form class="form-inline" method="post" action="/blog/{{ post.key().id() }}/delete">
                     <a class="btn btn-default post-button btn-xs" href="/blog/{{ post.key().id() }}/edit">Edit</a> 
@@ -25,7 +25,7 @@
         <div class="row">
             <div class="col-md-6">Posted by <a href="/user/{{ post.author.username }}">{{ post.author.username }}</a>: {{ post.created.strftime("%x @ %X") }}</div>
             <div class="col-md-6 text-right">
-                {% if post.is_liked_by(user) %}
+                {% if user and post.is_liked_by(user) %}
                 <a class="btn btn-success btn-xs" href="/blog/{{ post.key().id() }}/unlike">Unlike</a>
                 {% else %}
                 <a class="btn btn-default btn-xs" href="/blog/{{ post.key().id() }}/like">Like</a>

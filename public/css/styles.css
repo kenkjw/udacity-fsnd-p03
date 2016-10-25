@@ -63,3 +63,8 @@ form, textarea{
     padding: 0 15px;
     margin-bottom: 10px;
 }
+
+.error-bar{
+    background-color: #F66;
+    border-radius: 5px;
+}

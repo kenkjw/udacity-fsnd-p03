@@ -64,7 +64,7 @@ class EditPostPage(AuthBlogHandler):
             self.redirect('/blog/%s' % str(post.key().id()))
         else:
             error = "You must fill out the form"
-            self.render("editpost.html", subject = subject, content = content, error = error)
+            self.render("editpost.html", post=post, subject = subject, content = content, error = error)
 
 
 class DeletePostPage(AuthBlogHandler):

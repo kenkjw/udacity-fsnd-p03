@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<section class="row">
-    <form class="col-md-6" method="post">
+<section class="col-md-9">
+    <form class="col-md-12" method="post">
         <div class="form-group">
             <label for="subject">Subject:</label>
             <input class="form-control" type="text" name="subject" id="subject" value="{{ post.subject }}"/>
@@ -11,7 +11,7 @@
             <textarea class="form-control" name="content" id="content" rows="10">{{ post.content }}</textarea>
         </div>
         <div class="form-group text-right">
-            <div class="form-error">{{ error }}</div>
+            <div class="form-error"></div>
             <input class="btn btn-default" type="submit" />
             <a href="/blog/{{ post.key().id() }}" class="btn btn-default">Cancel</a>
         </div>
