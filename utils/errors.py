@@ -28,6 +28,8 @@ set("POST_LIKE_OWN","05","You cannot like your own post.")
 set("COMMENT_NOT_FOUND","10","Unable to find comment.")
 set("COMMENT_NO_PERMISSION_DELETE","11",
     "You do not have the permission to delete this comment.")
+set("COMMENT_NO_PERMISSION_DELETE","12",
+    "You do not have the permission to edit this comment.")
 
 set("USER_NOT_FOUND","20","Unable to find user.")
 

@@ -13,7 +13,7 @@ template_dir = os.path.join(os.path.dirname(__file__), '../templates')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir),
                                autoescape = True)
 md = markdown.Markdown()
-jinja_env.filters['markdown'] = lambda text: jinja2.Markup(md.convert(text))
+jinja_env.filters['markdown'] = lambda text: jinja2.Markup(md.convert(jinja2.escape(text)))
 
 
 class BlogHandler(webapp2.RequestHandler):

@@ -102,23 +102,37 @@ class CommentPostPage(AuthBlogHandler):
     def post(self, post_id):
         post = Post.by_id(post_id)
 
-        content = self.request.get('content')
+        content = self.request.get('comment')
         
         if not post:
             self.redirect_error("/blog","POST_NOT_FOUND")
-        elif content:
+        elif not content:
+            self.redirect_error("/blog/"+post_id,"POST_INCOMPLETE_FORM")
+        else:
             post.post_comment(self.user, content)
             self.redirect("/blog/"+post_id)
-        else:
-            self.redirect_error("/blog/"+post_id,"POST_INCOMPLETE_FORM")
 
 class CommentEditPostPage(AuthBlogHandler):
-    def post(self, post_id):
+    def post(self, post_id, comment_id):
         post = Post.by_id(post_id)
-        content = self.request.get('content')
-        
+        comment = Comment.by_id(comment_id,post)
+
+        content = self.request.get('comment')
+
         if not post:
             self.redirect_error("/blog","POST_NOT_FOUND")
+        elif not comment:
+            self.redirect_error("/blog/"+post_id,"COMMENT_NOT_FOUND")
+        elif comment.author.username != self.user.username:
+            self.redirect_error("/blog/"+post_id,"COMMENT_NO_PERMISSION_DELETE")
+        elif not content:
+            self.redirect_error("/blog/"+post_id,"POST_INCOMPLETE_FORM")
+        else:
+            comment.comment = content
+            comment.put()
+            self.redirect("/blog/"+post_id)
+            
+
 
 class CommentDeletePostPage(AuthBlogHandler):
     def post(self, post_id,comment_id):

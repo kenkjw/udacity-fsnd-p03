@@ -8,8 +8,8 @@
     <div>
     <form class="row" method="post" action="/blog/{{ post.key().id() }}/comment">
         <div class="form-group">
-            <label for="content">Post a comment:</label>
-            <textarea class="form-control" name="content" id="content" rows="5">{{ content }}</textarea>
+            <label for="comment-content">Post a comment:</label>
+            <textarea class="form-control" name="comment" id="comment-content"rows="5">{{ content }}</textarea>
         </div>
         <div class="form-group text-right">
             <div class="form-error"></div>
@@ -19,18 +19,34 @@
     </div>    
         {% for comment in post.get_comments() %}
     <div class="row comment">
-        <div class="col-md-12 comment-body">
-            {{ comment.comment | markdown }}
+
+        <div class="col-md-12 comment-header">
             {% if comment.author.username == user.username %}
             <div class="comment-action">
-                <form class="form-inline" method="post" action="/blog/{{ post.key().id() }}/comment/{{ comment.key().id() }}/delete">
-                        <a class="btn btn-default btn-xs" href="/blog/{{ post.key().id() }}/comment/{{ comment.key().id() }}/edit">Edit</a> 
-                        <button type="submit" class="btn btn-danger btn-xs">Delete</button>
+                <form class="form-inline pull-right" method="post" action="/blog/{{ post.key().id() }}/comment/{{ comment.key().id() }}/delete">
+                    <a class="btn btn-default btn-xs comment-edit-button">Edit</a>    
+                    <button type="submit" class="btn btn-danger btn-xs">Delete</button>
                 </form>
             </div>
             {% endif %}
         </div>
-        <div class="comment-footer text-right">
+        <div class="col-md-12 comment-body">
+            {% if comment.author.username == user.username %}
+            <div>
+                <form class="comment-edit-form" method="post" action="/blog/{{ post.key().id() }}/comment/{{ comment.key().id() }}/edit">
+                    <textarea class="form-control comment-edit-textarea" name="comment">{{ comment.comment }}</textarea>
+                    <div class="comment-edit-buttons">
+                        <button type="submit" class="btn btn-default btn-xs">Submit</button>
+                        <a class="btn btn-default btn-xs comment-edit-cancel-button">Cancel</a>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+            <div class="comment-content">
+            {{ comment.comment | markdown }}
+            </div>
+        </div>
+        <div class="col-md-12 comment-footer text-right">
             <span><a href="/user/{{ comment.author.username }}">{{ comment.author.username }}</a> @ {{ comment.created.strftime("%x @ %X") }}</span>
         </div>
     </div>

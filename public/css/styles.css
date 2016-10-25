@@ -58,10 +58,12 @@ form, textarea{
     padding: 0 15px;
     margin-bottom: 10px;
     background-color: #fff;
+
 }
 
 .comment-body {
     padding-top: 0.5em;
+    min-height: 5em;
 }
 .comment-footer {
     min-height: 1.5em;
@@ -69,9 +71,34 @@ form, textarea{
 }
 
 .comment-action {
-    position:absolute;
-    top:0;
-    right:-14px;
+    position: absolute;
+    top: 0;
+    right: -14px;
+    z-index: 1;
+}
+
+.comment-edit-form {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -15px;
+    height: 100%;
+    width: 100%;
+    display: none;
+}
+
+.comment-edit-textarea {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+}
+
+.comment-edit-buttons {
+    position: absolute;
+    bottom: 0;
+    right: 0;
 }
 .error-bar{
     background-color: #F66;
