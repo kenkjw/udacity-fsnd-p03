@@ -1,3 +1,12 @@
+"""
+Utility methods for converting an error message short string to a 
+short code for sending through a query string and then converting
+the short code back into a long error message string.
+
+get(SHORT_STRING) -> error_code
+get(error_code) -> Long error string.
+
+"""
 _error_codes = dict()
 _error_strings = dict()
 
