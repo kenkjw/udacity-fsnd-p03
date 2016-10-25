@@ -19,9 +19,9 @@ class Post(db.Model):
         return db.Key.from_path('blogs', name)
 
     def like_by(self, like, user):
-        if user.username == self.author.username or not self.likes_collection:
+        if user.username == self.author.username:
             return None
-        likes = self.likes_collection;
+        likes = Like.all().ancestor(self)
         l = [x for x in likes if x.user.username == user.username]
         if not like:
             for x in l:
@@ -31,16 +31,13 @@ class Post(db.Model):
             return l or Like.like(user, self)
 
     def is_liked_by(self, user):
-        if not self.likes_collection:
-            return None
-        likes = self.likes_collection;
+        likes = Like.all().ancestor(self)
         l = [like for like in likes if like.user.username == user.username]
         return l
 
 
 class Like(db.Model):
     user = db.ReferenceProperty(User, collection_name='likes_collection', required = True)
-    post = db.ReferenceProperty(Post, collection_name='likes_collection', required = True)
 
     @classmethod
     def by_id(cls, post_id):
@@ -48,8 +45,4 @@ class Like(db.Model):
 
     @classmethod
     def like(cls,user, post):
-        return Like(user=user, post=post, parent=cls.like_key()).put()
-    
-    @classmethod
-    def like_key(cls, name = 'default'):
-        return db.Key.from_path('likes', name)
+        return Like(user=user, parent=post).put()

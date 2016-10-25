@@ -6,8 +6,8 @@
             </div>
             {% if post.author.username == user.username %}
             <div class="col-md-6 text-right">
-                <form class="form-inline" method="post" action="/blog/delete/{{ post.key().id() }}">
-                    <a class="btn btn-default post-button btn-xs" href="/blog/edit/{{ post.key().id() }}">Edit</a> 
+                <form class="form-inline" method="post" action="/blog/{{ post.key().id() }}/delete">
+                    <a class="btn btn-default post-button btn-xs" href="/blog/{{ post.key().id() }}/edit">Edit</a> 
                     <button type="submit" class="btn btn-danger post-button btn-xs">Delete</button>
                 </form>
             </div>
@@ -26,7 +26,7 @@
             <div class="col-md-6">Posted by <a href="/user/{{ post.author.username }}">{{ post.author.username }}</a>: {{ post.created.strftime("%x @ %X") }}</div>
             <div class="col-md-6 text-right">
                 {% if post.is_liked_by(user) %}
-                You like this post. <a class="btn btn-default btn-xs" href="/blog/{{ post.key().id() }}/unlike">Unlike</a>
+                <a class="btn btn-success btn-xs" href="/blog/{{ post.key().id() }}/unlike">Unlike</a>
                 {% else %}
                 <a class="btn btn-default btn-xs" href="/blog/{{ post.key().id() }}/like">Like</a>
                 {% endif %}
